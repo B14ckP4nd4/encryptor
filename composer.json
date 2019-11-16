@@ -14,7 +14,8 @@
     ],
     "require": {
         "php": "^7.2",
+        "illuminate/support": "^6.0",
         "psecio/secure_dotenv": "^0.4.0",
         "defuse/php-encryption": "^2.2"
-    },
+    }
 }
