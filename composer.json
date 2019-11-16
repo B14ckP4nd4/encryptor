@@ -1,0 +1,20 @@
+{
+    "name": "blackpanda/encryptor",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "blackpanda\\encryptor\\" : "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "B14ckP4nd4",
+            "email": "B14ckP4nd4@protonmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "psecio/secure_dotenv": "^0.4.0",
+        "defuse/php-encryption": "^2.2"
+    },
+}
