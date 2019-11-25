@@ -5,6 +5,7 @@
 
 
     use Defuse\Crypto\Key;
+    use Psecio\SecureDotenv\Crypto;
     use Psecio\SecureDotenv\Parser;
 
     class Encryptor
@@ -18,6 +19,8 @@
         private $dbSecretKeyName;
         private $keyFileName;
         private $secureEnvName;
+        private $secureFilePrefix;
+        private $crypto;
 
         public function __construct()
         {
@@ -30,6 +33,8 @@
             $this->secureEnvName = config('encryptor.secure_env_name');
             $this->secureEnvName = $this->convertToMD5($this->secureEnvName);
 
+            $this->secureFilePrefix = config('encryptor.secure_file_prefix');
+
 
             $this->keyPath = base_path($this->keyFileName);
             $this->secureENVPath = base_path($this->secureEnvName);
@@ -39,6 +44,8 @@
             $this->validateGitIgnore($this->secureEnvName);
             $this->secureENV = new Parser($this->keyPath , $this->secureENVPath);
             $this->setDatabaseSecret();
+
+            $this->crypto = new Crypto($this->keyPath);
         }
 
         public function getENV(string $keyName = null){
@@ -54,6 +61,16 @@
         public function keyExist($key)
         {
             return (!empty($this->secureENV->getContent($key)));
+        }
+
+        public function encrypt($value)
+        {
+            return $this->crypto->encrypt($value);
+        }
+
+        public function decrypt($value)
+        {
+            return $this->secureENV->decryptValues($value);
         }
 
         public function getDatabaseSecret()
@@ -73,7 +90,7 @@
             return file_get_contents($this->keyPath);
         }
 
-        private function validateGitIgnore(string $file){
+        public function validateGitIgnore(string $file){
             $gitIgnore = file_get_contents(base_path('.gitignore'));
             $find = preg_quote($file);
             $preg = preg_match_all("/$find/i",$gitIgnore);
@@ -98,6 +115,16 @@
             }
             $this->setENV($this->dbSecretKeyName,$secret);
         }
+
+        /**
+         * @return \Illuminate\Config\Repository|mixed
+         */
+        public function getSecureFilePrefix()
+        {
+            return $this->secureFilePrefix;
+        }
+
+
 
         /**
          * @return string
