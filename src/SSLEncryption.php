@@ -26,6 +26,7 @@
         }
 
 
+        // Generate new Public and Private Key
         public function generateNewKeyPair()
         {
             $config = array(
@@ -56,6 +57,7 @@
         }
 
 
+        // Save Private Key in a Secure File
         public function savePublicKey(string $publicKey)
         {
             $publicFileName = md5(EncryptorFacade::getSecureFilePrefix() .'public.key');
@@ -78,6 +80,7 @@
             throw new \Exception("Key File Already exist");
         }
 
+        // Save Private Key HASH in Secure ENV file
         public function savePrivateHash(string $privateKey)
         {
             $privateKey = $this->parseKey($privateKey);
@@ -85,6 +88,7 @@
             return EncryptorFacade::setENV('private_hash',$hash);
         }
 
+        // return Public Key
         public function getPublicKey()
         {
             $publicKeyFile = EncryptorFacade::getENV('public_key');
@@ -100,6 +104,7 @@
             return false;
         }
 
+        // Encrypt Data with openssl_public_encrypt
         public function publicEncrypt(string $data)
         {
             try {
@@ -116,6 +121,8 @@
             return $encryptedData;
         }
 
+
+        // Decrypt Data with openssl_private_decrypt
         public function privateDecrypt(string $encrypted ,string $privateKey)
         {
             if(!$this->validatePrivateKey($privateKey)) throw new \Exception("Private Key Verification Failed!");
@@ -129,6 +136,7 @@
         }
 
 
+        // validate Private key based on PrivateKey hash on Secure ENV File
         public function validatePrivateKey(string $privateKey)
         {
             $privateKeyHash = EncryptorFacade::getENV('private_hash');
@@ -189,6 +197,8 @@
             $this->private_key_type = $private_key_type;
         }
 
+
+        // Parse Private And Public Keys and return in Standard Format
         private function parseKey($key)
         {
             preg_match('/(?<prefix>-{5}BEGIN (?<type>(PRIVATE|PUBLIC)) KEY-{5})\s+?(?<key>.*)\s+?(?<suffix>-{5}END (PRIVATE|PUBLIC) KEY-{5})/ism',$key,$match);

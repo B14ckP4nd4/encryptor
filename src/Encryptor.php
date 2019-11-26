@@ -22,6 +22,8 @@
         private $secureFilePrefix;
         private $crypto;
 
+        CONST OVERWRITE_ENV_VALUES = false;
+
         public function __construct()
         {
             $this->dbEncryptionPrefix = config('encryptor.db_encryption_prefix');
@@ -48,48 +50,58 @@
             $this->crypto = new Crypto($this->keyPath);
         }
 
+        // GET ENV Values with KEY OR ALL OF The Content
         public function getENV(string $keyName = null){
             return $this->secureENV->getContent($keyName);
         }
 
+        // SET or or OverWrite keys
         public function setENV(string $key,string $value)
         {
-            if(!$this->secureENV->save($key,$value,true)) throw new \Exception('add New LINE TO ENV has been Failed');
+            // Save new Data
+            if(!$this->secureENV->save($key,$value,self::OVERWRITE_ENV_VALUES)) throw new \Exception('add New LINE TO ENV has been Failed');
             return true;
         }
 
+        // Check keys Entity
         public function keyExist($key)
         {
             return (!empty($this->secureENV->getContent($key)));
         }
 
+        // Manual Encrypt Based on Psecio\SecureDotenv\Crypto
         public function encrypt($value)
         {
             return $this->crypto->encrypt($value);
         }
 
+        // Manual Decrypt Based on Psecio\SecureDotenv\Crypto
         public function decrypt($value)
         {
             return $this->secureENV->decryptValues($value);
         }
 
+        // return database Secret
         public function getDatabaseSecret()
         {
             return ($this->keyExist($this->dbSecretKeyName)) ? $this->getENV($this->dbSecretKeyName) : false;
         }
 
+        // Generate and Store Key file
         private function validateKeyFile(){
             if($this->getSecureKey() && strlen($this->getSecureKey()) > 0) return true;
             $key = Key::createNewRandomKey();
             file_put_contents($this->keyPath,$key->saveToAsciiSafeString());
         }
 
+        // get Security key for Encryption ENV values
         private function getSecureKey(){
             if(!file_exists($this->keyPath)) return false;
 
             return file_get_contents($this->keyPath);
         }
 
+        // Add Sensitive and Secure Files to git ignore
         public function validateGitIgnore(string $file){
             $gitIgnore = file_get_contents(base_path('.gitignore'));
             $find = preg_quote($file);
@@ -99,6 +111,7 @@
             }
         }
 
+        // create Secure ENV File if it's doesn't exist
         private function validateSecureENV(){
             if(file_exists($this->secureENVPath)) return true;
             $secureENV = fopen($this->secureENVPath,"w");
@@ -106,6 +119,7 @@
             fclose($secureENV);
         }
 
+        // Set the Secret of db encryption
         private function setDatabaseSecret(){
             if($this->keyExist($this->dbSecretKeyName)) return false;
             $strong = false;
