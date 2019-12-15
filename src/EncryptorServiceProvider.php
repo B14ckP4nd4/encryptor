@@ -20,6 +20,7 @@
             // register Facade
             $loader = AliasLoader::getInstance();
             $loader->alias('Encryptor','blackpanda\encryptor\EncryptorFacade');
+            $loader->alias('SSLEncryption','blackpanda\encryptor\SSLFacade');
         }
 
         public function boot()
