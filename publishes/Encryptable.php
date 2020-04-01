@@ -1,6 +1,5 @@
 <?php
 
-
     namespace App\EncryptorTraits;
 
     use blackpanda\encryptor\Encryptor;

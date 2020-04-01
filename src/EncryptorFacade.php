@@ -1,6 +1,5 @@
 <?php
 
-
     namespace blackpanda\encryptor;
 
     use Illuminate\Support\Facades\Facade;

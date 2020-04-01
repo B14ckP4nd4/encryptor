@@ -1,6 +1,5 @@
 <?php
 
-
     namespace blackpanda\encryptor;
 
     use Defuse\Crypto\Key;

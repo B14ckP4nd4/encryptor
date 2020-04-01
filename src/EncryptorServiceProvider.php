@@ -1,6 +1,5 @@
 <?php
 
-
     namespace blackpanda\encryptor;
 
     use Illuminate\Foundation\AliasLoader;

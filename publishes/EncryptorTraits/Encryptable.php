@@ -3,7 +3,6 @@
 
     namespace App\EncryptorTraits;
 
-
     use blackpanda\encryptor\Encryptor;
     use Illuminate\Contracts\Encryption\DecryptException;
     use Illuminate\Contracts\Encryption\EncryptException;

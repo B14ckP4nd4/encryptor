@@ -54,7 +54,6 @@
 
         }
 
-
         // Save Private Key in a Secure File
         public function savePublicKey(string $publicKey)
         {
